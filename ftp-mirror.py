@@ -463,5 +463,5 @@ if __name__ == '__main__':
         log('Aborted', abort=True)
     except SystemExit:
         raise
-    except Exception, err:
+    except Exception as err:
         log(err, abort=True)
