@@ -72,17 +72,18 @@ def log(msg, level=1, abort=False):
     if level <= globals['verbose'] or abort:
         if abort:
             sys.stdout = sys.stderr
-            print
-        print msg
+            print()
+        print (msg)
     if abort:
         sys.exit(1)
 
 def strfbytes(value):
+    global unit
     units = ['Bytes', 'KB', 'MB', 'GB', 'TB']
     value = float(value)
     for unit in units:
         if value < 1024: break
-        value = value / 1024
+        value /= 1024
     if unit == units[0]: fmt = '%.0f %s'
     else: fmt = '%.2f %s'
     return fmt % (value, unit)
@@ -125,7 +126,7 @@ class localHandler:
                     'size': os.path.getsize(path),
                     'mtime': mtime,
                     }
-        return (dirs, files)
+        return dirs, files
 
     def makedir(self, path):
         log('--> Create directory %s' % path, 2)
@@ -209,7 +210,7 @@ class remoteHandler:
                     'size': size,
                     'mtime': mtime,
                     }
-        return (dirs, files)
+        return dirs, files
 
     def makedir(self, path):
         log('--> Create directory %s' % path, 2)
@@ -317,22 +318,22 @@ def mirror(src, dst, subdir=''):
 def info(remote):
     try:
         sfmstat = remote.readlines(os.path.join(remote.root, '.sfmstat'))
-    except ftplib.error_perm, err:
+    except ftplib.error_perm as err:
         if not err[0].startswith('550'):
             log(err, abort=True)
         sfmstat = None
-    print
+    print()
     if sfmstat:
         last_updated, mirror_path = sfmstat[0].split(None, 1)
         last_updated = datetime.datetime.fromtimestamp(float(last_updated))
-        print 'Mirror of', mirror_path
-        print last_updated.strftime('Last updated on %A, %d. %B %Y at %H:%M:%S')
+        print('Mirror of', mirror_path)
+        print(last_updated.strftime('Last updated on %A, %d. %B %Y at %H:%M:%S'))
     else:
-        print 'No mirror recognized'
-    print
-    print 'Content of %s%s:' % (remote.host, remote.root)
+        print('No mirror recognized')
+    print()
+    print('Content of %s%s:' % (remote.host, remote.root))
     remote.ftp.dir(remote.root)
-    print
+    print()
 
 
 def remove(remote):
@@ -345,12 +346,13 @@ def remove(remote):
 
 
 def main():
+    global args, opts
     username = ''
     password = ''
     account = ''
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'vqu:p:a:')
-    except getopt.GetoptError, msg:
+    except getopt.GetoptError as msg:
         log('%s\n%s' % (msg, __doc__), abort=True)
     for opt, val in opts:
         if opt == '-v': globals['verbose'] += 1
@@ -405,7 +407,7 @@ def main():
     ftp.login(username, password, account)
     try:
         ftp.cwd(remotedir)
-    except ftplib.error_perm, err:
+    except ftplib.error_perm as err:
         if err[0].startswith('550'):
             log('remotedir does not exist: %s' % remotedir, abort=True)
         else:
@@ -430,27 +432,28 @@ def main():
     log('Done')
     status = globals['status']
     status['time_finished'] = datetime.datetime.now()
-    print
-    print '=' * 60
-    print 'Processing Summary'
-    print '=' * 60
-    print '%-30s%30s' % ('Directories created', status['dirs_created'])
-    print '%-30s%30s' % ('Directories removed', status['dirs_removed'])
-    print '%-30s%30s' % ('Directories total', status['dirs_total'])
-    print
-    print '%-30s%30s' % ('Files created', status['files_created'])
-    print '%-30s%30s' % ('Files updated', status['files_updated'])
-    print '%-30s%30s' % ('Files removed', status['files_removed'])
-    print '%-30s%30s' % ('Files total', status['files_total'])
-    print
-    print '%-30s%30s' % ('Bytes transfered', strfbytes(status['bytes_transfered']))
-    print '%-30s%30s' % ('Bytes total', strfbytes(status['bytes_total']))
-    print
-    print '%-30s%30s' % ('Time started', status['time_started'])
-    print '%-30s%30s' % ('Time finished', status['time_finished'])
-    print '%-30s%30s' % ('Duration', status['time_finished']-status['time_started'])
-    print '=' * 60
-    print
+    print()
+    print('=' * 60)
+    print('Processing Summary')
+    print('=' * 60)
+    print('%-30s%30s' % ('Directories created', status['dirs_created']))
+    print('%-30s%30s' % ('Directories removed', status['dirs_removed']))
+    print('%-30s%30s' % ('Directories total', status['dirs_total']))
+    print()
+    print()
+    print( '%-30s%30s' % ('Files created', status['files_created']))
+    print('%-30s%30s' % ('Files updated', status['files_updated']))
+    print('%-30s%30s' % ('Files removed', status['files_removed']))
+    print('%-30s%30s' % ('Files total', status['files_total']))
+    print()
+    print( '%-30s%30s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
+    print('%-30s%30s' % ('Bytes total', strfbytes(status['bytes_total'])))
+    print()
+    print('%-30s%30s' % ('Time started', status['time_started']))
+    print('%-30s%30s' % ('Time finished', status['time_finished']))
+    print( '%-30s%30s' % ('Duration', status['time_finished']-status['time_started']))
+    print( '=' * 60)
+    print()
 
 
 if __name__ == '__main__':
