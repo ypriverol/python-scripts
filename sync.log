@@ -1,0 +1,32 @@
+mkdir file:/Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000006/PAe000006_346_search.params.tar.gz
+mkdir file:/Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003
+mkdir file:/Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004
+mkdir file:/Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005
+shell ln -sf ../../SearchDatabase/ipi.HUMAN.v3.21plus.fasta /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006/PAe000006_346_searchdatabase_sequest.fasta
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000006/PAe000006_346_sequest.params
+shell ln -sf /prometheus/u1/ftp/pub/PeptideAtlas/Repository/SearchDatabase/ipi.HUMAN.v3.21plus.fasta /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000002/PAe000002_379_searchdatabase_sequest.fasta
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000002 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000002/PAe000002_README
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000004/PAe000004_375_search.params.tar.gz
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000003/PAe000003_369_search.params.tar.gz
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000005/PAe000005_362_search.params.tar.gz
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000006/PAe000006_README
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000002 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000002/PAe000002_Search_Results_379_201106211455.properties
+shell ln -sf ../../SearchDatabase/ipi.HUMAN.v3.21plus.fasta /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004/PAe000004_375_searchdatabase_sequest.fasta
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000004/PAe000004_375_sequest.params
+shell ln -sf ../../SearchDatabase/ipi.HUMAN.v3.21plus.fasta /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005/PAe000005_362_searchdatabase_sequest.fasta
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000005/PAe000005_362_sequest.params
+shell ln -sf ../../SearchDatabase/ipi.HUMAN.v3.21plus.fasta /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003/PAe000003_369_searchdatabase_sequest.fasta
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000003/PAe000003_369_sequest.params
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000006/PAe000006_Search_Results_346_201104181812.properties
+pget -n 5 -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000002 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000002/PAe000002_Search_Results_379_201106211455.tar.gz
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000004/PAe000004_README
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000005/PAe000005_README
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000003/PAe000003_README
+pget -n 5 -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000006 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000006/PAe000006_Search_Results_346_201104181812.tar.gz
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000004/PAe000004_Search_Results_375_201104190106.properties
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000005/PAe000005_Search_Results_362_201104181807.properties
+get -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000003/PAe000003_Search_Results_369_201104190102.properties
+pget -n 5 -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000004 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000004/PAe000004_Search_Results_375_201104190106.tar.gz
+pget -n 5 -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000005 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000005/PAe000005_Search_Results_362_201104181807.tar.gz
+pget -n 5 -O /Users/yperez/IdeaProjects/github-repo/ypriverol/python-scripts/data/PAe000003 ftp://anonymous:@ftp.peptideatlas.org/pub/PeptideAtlas/Repository/Human/PAe000003/PAe000003_Search_Results_369_201104190102.tar.gz

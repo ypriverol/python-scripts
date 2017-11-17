@@ -36,7 +36,6 @@ info: prints some information about remote mirror
 hostname[:port]: remote host
 remotedir: remote directory (default initial)
 localdir: local directory (default current)
-
 Example: sfm -u myuser store ftp.mydomain.com /myfolder /my/folder
          Will mirror the content of local directory /my/folder
          to remote directory /myfolder
