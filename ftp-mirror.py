@@ -49,7 +49,7 @@ import getpass
 import ftplib
 import time
 import datetime
-import StringIO
+from io import StringIO
 
 globals = {
     'verbose': 1,
