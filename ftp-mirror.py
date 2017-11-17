@@ -65,17 +65,19 @@ globals = {
         'bytes_total': 0,
         'time_started': datetime.datetime.now(),
         'time_finished': 0,
-        },
-    }
+    },
+}
+
 
 def log(msg, level=1, abort=False):
     if level <= globals['verbose'] or abort:
         if abort:
             sys.stdout = sys.stderr
             print()
-        print (msg)
+        print(msg)
     if abort:
         sys.exit(1)
+
 
 def strfbytes(value):
     global unit
@@ -84,13 +86,16 @@ def strfbytes(value):
     for unit in units:
         if value < 1024: break
         value /= 1024
-    if unit == units[0]: fmt = '%.0f %s'
-    else: fmt = '%.2f %s'
+    if unit == units[0]:
+        fmt = '%.0f %s'
+    else:
+        fmt = '%.2f %s'
     return fmt % (value, unit)
 
 
 class localHandler:
     """ Local file and directory functions"""
+
     def __init__(self, ftp, root):
         self.ftp = ftp
         self.root = root
@@ -120,12 +125,14 @@ class localHandler:
             if os.path.isdir(path):
                 dirs.append(name)
             else:
-                if skip_mtime: mtime = 0
-                else: mtime = int(os.path.getmtime(path))
+                if skip_mtime:
+                    mtime = 0
+                else:
+                    mtime = int(os.path.getmtime(path))
                 files[name] = {
                     'size': os.path.getsize(path),
                     'mtime': mtime,
-                    }
+                }
         return dirs, files
 
     def makedir(self, path):
@@ -152,6 +159,7 @@ class localHandler:
 
 class remoteHandler:
     """Remote file and directory functions"""
+
     def __init__(self, ftp, root):
         self.ftp = ftp
         self.root = root
@@ -174,8 +182,8 @@ class remoteHandler:
 
     def list(self, dir, skip_mtime=False):
         month_to_int = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4,
-            'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9,
-            'Oct': 10, 'Nov': 11, 'Dec': 12}
+                        'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9,
+                        'Oct': 10, 'Nov': 11, 'Dec': 12}
         try:
             buffer = []
             self.ftp.dir('-a', dir, buffer.append)
@@ -209,7 +217,7 @@ class remoteHandler:
                 files[name] = {
                     'size': size,
                     'mtime': mtime,
-                    }
+                }
         return dirs, files
 
     def makedir(self, path):
@@ -253,8 +261,10 @@ def mirror(src, dst, subdir=''):
         del dst_files['.sfmstat']
     else:
         if dst_path == dst.root and (dst_dirs or dst_files):
-            if globals['verbose']: abort = False
-            else: abort = True
+            if globals['verbose']:
+                abort = False
+            else:
+                abort = True
             log('New mirror, but target directory not empty!', abort=abort)
             result = raw_input('Do you really want to replace this directory? [y|n]: ')
             if result.lower() not in ('y', 'yes'):
@@ -263,8 +273,10 @@ def mirror(src, dst, subdir=''):
 
     last_updated, mirror_path = sfmstat[0].split(None, 1)
     if mirror_path != (src.host + src_path):
-        if globals['verbose']: abort = False
-        else: abort = True
+        if globals['verbose']:
+            abort = False
+        else:
+            abort = True
         error = 'Mirror mismatch!\n%s already contains another mirror of %s' % (dst_path, mirror_path)
         log(error, abort=abort)
         result = raw_input('Do you really want to replace this mirror? [y|n]: ')
@@ -292,7 +304,7 @@ def mirror(src, dst, subdir=''):
     newstat = ['%i %s%s' % (int(time.time()), src.host, src_path)]
     for file in src_files:
         if file not in dst_files or src_files[file]['mtime'] > dst_files[file]['mtime'] \
-            or src_files[file]['size'] != dst_files[file]['size']:
+                or src_files[file]['size'] != dst_files[file]['size']:
             src_file = os.path.join(src_path, file)
             dst_file = os.path.join(dst_path, file)
             if file in dst_files:
@@ -390,7 +402,7 @@ def main():
             log('Too many arguments\n%s' % __doc__, abort=True)
         localdir = os.path.abspath(args[3])
         if not os.path.isdir(localdir):
-            log('localdir does not exist: %s' % localdir, abort=True)
+            log('Local Dir does not exist: %s' % localdir, abort=True)
 
     if len(args) > 4:
         log('Too many arguments\n%s' % __doc__, abort=True)
@@ -400,16 +412,16 @@ def main():
     elif not password and globals['verbose']:
         password = getpass.getpass('FTP Password: ')
 
-    ftp = ftplib.FTP()
+    ftp = ftplib.FTP(timeout=300)
     if globals['verbose'] > 2:
-        ftp.set_debuglevel(globals['verbose']-2)
+        ftp.set_debuglevel(globals['verbose'] - 2)
     ftp.connect(host, port)
     ftp.login(username, password, account)
     try:
         ftp.cwd(remotedir)
     except ftplib.error_perm as err:
         if err[0].startswith('550'):
-            log('remotedir does not exist: %s' % remotedir, abort=True)
+            log('Remote Dir does not exist: %s' % remotedir, abort=True)
         else:
             raise
     ftp.cwd('/')
@@ -441,18 +453,18 @@ def main():
     print('%-30s%30s' % ('Directories total', status['dirs_total']))
     print()
     print()
-    print( '%-30s%30s' % ('Files created', status['files_created']))
+    print('%-30s%30s' % ('Files created', status['files_created']))
     print('%-30s%30s' % ('Files updated', status['files_updated']))
     print('%-30s%30s' % ('Files removed', status['files_removed']))
     print('%-30s%30s' % ('Files total', status['files_total']))
     print()
-    print( '%-30s%30s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
+    print('%-30s%30s' % ('Bytes transfered', strfbytes(status['bytes_transfered'])))
     print('%-30s%30s' % ('Bytes total', strfbytes(status['bytes_total'])))
     print()
     print('%-30s%30s' % ('Time started', status['time_started']))
     print('%-30s%30s' % ('Time finished', status['time_finished']))
-    print( '%-30s%30s' % ('Duration', status['time_finished']-status['time_started']))
-    print( '=' * 60)
+    print('%-30s%30s' % ('Duration', status['time_finished'] - status['time_started']))
+    print('=' * 60)
     print()
 
 
