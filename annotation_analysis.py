@@ -15,36 +15,68 @@ def get_projects(mongo_uri):
 
 def process_software_information(project, software_accession, name):
 
-    software_list = project['softwareList']
     data_protocol = project['dataProtocol']
-    sample_protocol = project['sampleProtocol']
+    description = ""
     if 'description' in project:
          description = project['description']
 
     if re.search(" " + name + " ", data_protocol, re.IGNORECASE):
+        print(project['accession'], " " , name)
+    elif re.search(" " + name + " ", description, re.IGNORECASE):
+        print(project['accession'], " ", name)
+
+def process_instrument_information(project, instrument_accession, name):
+
+    sample_protocol = project['sampleProtocol']
+    if 'description' in project:
+         description = project['description']
+
+    if re.search(" " + name + " ", sample_protocol, re.IGNORECASE):
         print(project['accession'], " " ,name)
+    elif re.search(" " + name + " ", description, re.IGNORECASE):
+        print(project['accession'], " ", name)
 
+def process_quantification_information(project, quantification_accession, name):
 
-def init_obo_ms_ontology():
+    sample_protocol = project['sampleProtocol']
+    description = ""
+    if 'description' in project:
+        description = project['description']
 
-    url = 'https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo'
+    if re.search(" " + name + " ", sample_protocol, re.IGNORECASE):
+        print(project['accession'], " ", name)
+    elif re.search(" " + name + " ", description, re.IGNORECASE):
+        print(project['accession'], " ", name)
+
+def read_obo_file_from_url(url):
     graph = obonet.read_obo(url)
-
     # Number of nodes
     print(len(graph))
-
     # Number of edges
     graph.number_of_edges()
-
     # Mapping from term ID to name
     id_to_name = {id_: data.get('name') for id_, data in graph.nodes(data=True)}
     return graph
+
+
+def init_obo_ms_ontology():
+    url = 'https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo'
+    return read_obo_file_from_url(url)
+
 
 def get_subterms(graph, accession):
 
     # Find all superterms of species. Note that networkx.descendants gets
     # superterms, while networkx.ancestors returns subterms.
     return  networkx.ancestors(graph, accession)
+
+
+def init_obo_pride_ontology():
+    url = 'https://raw.githubusercontent.com/PRIDE-Utilities/pride-ontology/master/pride_cv.obo'
+    return read_obo_file_from_url(url)
+
+
+
 
 
 def main():
@@ -58,26 +90,27 @@ def main():
 
     ms_ontology = init_obo_ms_ontology()
     ontology_softwares = get_subterms(ms_ontology, "MS:1001456")
+    ontology_instruments = get_subterms(ms_ontology, "MS:1000031")
+
+    pride_ontology = init_obo_pride_ontology()
+    quantification_types = get_subterms(pride_ontology, "PRIDE:0000309")
 
     for project in projects:
         for software_accession in ontology_softwares:
             software_ols = ms_ontology.node[software_accession]
             process_software_information(project, software_accession, software_ols['name'])
 
-    for line in projects:
-        req = requests.get('https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=' + line.strip() + "&format=json")
-        project = req.json()
-        if (project['hitCount'] != 0):
-            doi  = ''
-            pmid = ''
-            if(project['resultList']['result'][0].get('pmid')):
-                pmid = project['resultList']['result'][0]['pmid']
-            if (project['resultList']['result'][0].get('doi')):
-                doi = project['resultList']['result'][0]['doi']
+    print("Time to Analyze the instruments !!!!\n\n")
+    for project in projects:
+        for instrument_accession in ontology_instruments:
+            instrument_ols = ms_ontology.node[instrument_accession]
+            process_instrument_information(project, instrument_accession, instrument_ols['name'])
 
-            if(pmid is not None and len(line.strip()) > 0):
-                print("PROJECT\t" + line.strip() + "\tPMID\t" + pmid + "\t DOI\t" + doi)
-                subprocess.check_call("./runPublication.sh -a %s -p %s -f" % (line.strip(), pmid), shell=True)
+    print("Time to Analyze the quantification type!!! \n\n")
+    for project in projects:
+        for quantification_accession in quantification_types:
+            quantification_ols = ms_ontology.node[quantification_accession]
+            process_quantification_information(project, quantification_accession, quantification_ols['name'])
 
 
 if __name__ == '__main__':
