@@ -57,7 +57,7 @@ def main():
             if (project['resultList']['result'][0].get('doi')):
                 doi = project['resultList']['result'][0]['doi']
 
-            if(pmid is not None):
+            if(pmid is not None and len(line.strip()) > 0):
                 print("PROJECT\t" + line.strip() + "\tPMID\t" + pmid + "\t DOI\t" + doi)
                 subprocess.check_call("./runPublication.sh -a %s -p %s -f" % (line.strip(), pmid), shell=True)
 
