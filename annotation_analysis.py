@@ -75,10 +75,6 @@ def init_obo_pride_ontology():
     url = 'https://raw.githubusercontent.com/PRIDE-Utilities/pride-ontology/master/pride_cv.obo'
     return read_obo_file_from_url(url)
 
-
-
-
-
 def main():
 
     # Parse the parameters of the script
