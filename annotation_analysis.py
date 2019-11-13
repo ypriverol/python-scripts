@@ -1,17 +1,34 @@
 import argparse
+import csv
+import requests
 
 import networkx
 import obonet as obonet
-import requests
 from pymongo import MongoClient
 import re
 
+CSV_HEADER = {
+    "ProjectAccession":"0",
+    "Instrument":"1",
+    "Quantification Method":"2",
+    "Software":"3",
+    "PTM":"4",
+    "Species":"5",
+    "Publication_ids":"6"
+}
 
 def get_projects(mongo_uri):
     client = MongoClient(mongo_uri)
     db = client.pridepro
     return db.pride_projects.find({})
 
+def get_annotation_file():
+    response = requests.get("https://raw.githubusercontent.com/PRIDE-Utilities/pride-ontology/master/pride-annotations/pride_projects.csv")
+    cr = csv.reader(response.content.decode('utf-8').splitlines(), delimiter=',')
+    my_list = list(cr)
+    for row in my_list:
+        print (row)
+    return my_list
 
 def process_software_information(project, software_accession, name):
 
@@ -80,7 +97,10 @@ def main():
     # Parse the parameters of the script
     parser = argparse.ArgumentParser(description='Analysing PRIDE projects metadata for missing fields')
     parser.add_argument('--mongo_uri', dest='mongo_uri', required=True, help='MongoDB uri in production')
+    parser.add_argument('--new_file', dest='new_file', required=True, help='File with new proposed annotations')
     args = parser.parse_args()
+
+    projects_annotations = get_annotation_file()
 
     projects = get_projects(args.mongo_uri)
 
@@ -107,6 +127,11 @@ def main():
         for quantification_accession in quantification_types:
             quantification_ols = ms_ontology.node[quantification_accession]
             process_quantification_information(project, quantification_accession, quantification_ols['name'])
+
+    projects_writer = csv.writer(args.new_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+    for row in projects_annotations:
+        projects_writer.writerow(row)
 
 
 if __name__ == '__main__':

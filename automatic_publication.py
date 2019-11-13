@@ -3,8 +3,6 @@ import os
 import subprocess
 
 import requests
-import sys
-
 import cx_Oracle
 import argparse
 
@@ -47,7 +45,7 @@ def main():
     if (args.skip_projects is not None):
         f = open(args.skip_projects, "r")
         for x in f:
-            skip_projects.append(x)
+            skip_projects.append(x.strip())
 
     for line in private_projects:
         req = requests.get(
@@ -61,9 +59,11 @@ def main():
             if (project['resultList']['result'][0].get('doi')):
                 doi = project['resultList']['result'][0]['doi']
 
-            if (pmid is not None and len(line.strip()) > 0 and (line.strip() not in skip_projects)):
+            if (pmid is not None and len(pmid.strip()) > 0 and (line.strip() not in skip_projects)):
                 print("PROJECT\t" + line.strip() + "\tPMID\t" + pmid + "\t DOI\t" + doi)
                 subprocess.check_call("./runPublication.sh -a %s -p %s -f" % (line.strip(), pmid), shell=True)
+            elif((line.strip() in skip_projects)):
+                print("Skiping Project -- " + line.strip())
 
 
 if __name__ == '__main__':
