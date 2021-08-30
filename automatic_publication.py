@@ -1,28 +1,31 @@
 #!/usr/bin/env python
-import os
-import subprocess
 
 import requests
-import cx_Oracle
+import psycopg2
 import argparse
 
-os.environ["ORACLE_HOME"] = "/Users/yperez/local-apps/oracle-client/instantclient_19_3/"
 
 
-def get_private_projects(server, username, password):
+def get_private_projects(server, database, user, password):
     """
-    Get the private projects from Oracle database
-    :param server: Oracle server
-    :param username: Oracle username
-    :param password: Oracle user password
+    Get the private projects from postgres database
+    :param server: postgres server
+    :param username: postgres username
+    :param password: postgres user password
     :return:
     """
 
-    connection = cx_Oracle.connect(username, password, server)
+    connection = psycopg2.connect(user=user,
+                                  password=password,
+                                  host=server,
+                                  port="5432",
+                                  database=database)
+    cursor = connection.cursor()
     pride_projects = []
 
     cursor = connection.cursor()
-    for row in cursor.execute("""SELECT ACCESSION FROM PROJECT WHERE IS_PUBLIC=0"""):
+    cursor.execute("select accession from pridearch.project where is_public=0")
+    for row in cursor.fetchall():
         print(row)
         pride_projects.append(row[0])
 
@@ -32,14 +35,15 @@ def get_private_projects(server, username, password):
 def main():
 
     parser = argparse.ArgumentParser(description='Automatically lunch publication jobs for datasets in EuropePMC')
-    parser.add_argument('--oracle_server', dest='oracle_server', required=True, help='Oracle server url')
-    parser.add_argument('--oracle_user', dest='oracle_user', required=True, help='Oracle server username')
-    parser.add_argument('--oracle_password', dest='oracle_password', required=True, help='Oracle server user password')
+    parser.add_argument('--server', dest='server', required=True, help='postgres server url')
+    parser.add_argument('--database', dest='database', required=True, help='database name')
+    parser.add_argument('--user', dest='user', required=True, help='postgres server username')
+    parser.add_argument('--password', dest='password', required=True, help='postgres server user password')
     parser.add_argument('--skip_projects', dest='skip_projects', required=False,
                         help='Skip the following projects because they have errors')
     args = parser.parse_args()
 
-    private_projects = get_private_projects(args.oracle_server, args.oracle_user, args.oracle_password)
+    private_projects = get_private_projects(args.server, args.database, args.user, args.password)
 
     skip_projects = []
     if (args.skip_projects is not None):
@@ -60,11 +64,10 @@ def main():
                 doi = project['resultList']['result'][0]['doi']
 
             if (pmid is not None and len(pmid.strip()) > 0 and (line.strip() not in skip_projects)):
-                print("PROJECT\t" + line.strip() + "\tPMID\t" + pmid + "\t DOI\t" + doi)
-                subprocess.check_call("./runPublication.sh -a %s -p %s -f" % (line.strip(), pmid), shell=True)
+                print(line.strip() + "\t" + pmid)
+                # subprocess.check_call("./runPublication.sh -a %s -p %s -f" % (line.strip(), pmid), shell=True)
             elif((line.strip() in skip_projects)):
                 print("Skiping Project -- " + line.strip())
-
 
 if __name__ == '__main__':
     main()
